@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filmer - CRUD Applikation</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .main-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      padding: 2rem;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(220, 0, 0, 0.2);
+    }
+
+    h1 {
+      background: linear-gradient(90deg, #dc0000, #667eea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2.5rem;
+    }
+
+    h1 i {
+      color: #dc0000;
+      -webkit-text-fill-color: #dc0000;
+      margin-right: 10px;
+    }
+
+    .form-section {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 2px solid #e9ecef;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #dc0000;
+      box-shadow: 0 0 0 0.2rem rgba(220, 0, 0, 0.15);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #dc0000 0%, #667eea 100%);
+      border: none;
+      padding: 0.7rem 2rem;
+      font-weight: bold;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(220, 0, 0, 0.4);
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      border: none;
+      padding: 0.7rem 2rem;
+      font-weight: bold;
+      transition: transform 0.2s;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      background: #5a6268;
+    }
+
+    .movie-card {
+      border-radius: 15px;
+      padding: 1.5rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: none;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      height: 100%;
+    }
+
+    .movie-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .movie-card h5 {
+      color: #2d3748;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+    }
+
+    .movie-card h5 i {
+      color: #dc0000;
+    }
+
+    .movie-card .badge {
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .rating-badge {
+      background: #ffc107;
+      color: #000;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .btn-warning {
+      background: #ffc107;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .btn-warning:hover {
+      background: #ffb300;
+      transform: scale(1.05);
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      border: none;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .btn-danger:hover {
+      background: #c82333;
+      transform: scale(1.05);
+    }
+
+    .movie-grid {
+      margin-top: 2rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+      color: #dc0000;
+    }
+
+    /* Färgkodning baserat på betyg - med subtil glöd */
+    .rating-high {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      border-left: 5px solid #28a745;
+      box-shadow: 0 0 15px rgba(40, 167, 69, 0.2);
+    }
+
+    .rating-medium {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+      border-left: 5px solid #ffc107;
+      box-shadow: 0 0 15px rgba(255, 193, 7, 0.2);
+    }
+
+    .rating-low {
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+      border-left: 5px solid #dc3545;
+      box-shadow: 0 0 15px rgba(220, 53, 69, 0.2);
+    }
+
+    .sort-controls {
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .sort-controls label {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 0;
+    }
+
+    .sort-controls label i {
+      color: #dc0000;
+    }
+
+    /* Loading spinner */
+    .spinner-border {
+      margin: 3rem 0;
+    }
+
+    /* Responsiv design */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .main-container {
+        padding: 1rem;
+      }
+
+      .movie-card {
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="main-container">
+      <h1><i class="bi bi-film"></i>Filmbibliotek</h1>
+
+      <!-- Formulär -->
+      <div class="form-section">
+        <h4 class="mb-3"><i class="bi bi-plus-circle"></i> Lägg till / Ändra film</h4>
+        <form id="movieForm">
+          <input type="hidden" id="movieId">
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="title" class="form-label"><i class="bi bi-fonts"></i> Titel</label>
+              <input id="title" class="form-control" placeholder="T.ex. Inception" required maxlength="200">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="genre" class="form-label"><i class="bi bi-tag"></i> Genre</label>
+              <input id="genre" class="form-control" placeholder="T.ex. Sci-Fi" required maxlength="100">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="year" class="form-label"><i class="bi bi-calendar"></i> År</label>
+              <input id="year" class="form-control" type="number" min="1800" max="2100" placeholder="T.ex. 2010" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="rating" class="form-label"><i class="bi bi-star-fill"></i> Betyg (1-10)</label>
+              <input id="rating" class="form-control" type="number" min="1" max="10" placeholder="Betyg mellan 1-10" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary me-2">
+            <i class="bi bi-check-circle"></i> Spara
+          </button>
+          <button type="button" id="cancelBtn" class="btn btn-secondary" style="display: none;">
+            <i class="bi bi-x-circle"></i> Avbryt
+          </button>
+        </form>
+      </div>
+
+      <!-- Sorteringskontroller -->
+      <div class="sort-controls">
+        <label for="sortBy"><i class="bi bi-sort-down"></i> Sortera efter:</label>
+        <select id="sortBy" class="form-select" style="width: auto;">
+          <option value="title">Titel (A-Ö)</option>
+          <option value="rating-desc" selected>Betyg (Högst-Lägst)</option>
+          <option value="rating-asc">Betyg (Lägst-Högst)</option>
+          <option value="year-desc">År (Nyast-Äldst)</option>
+          <option value="year-asc">År (Äldst-Nyast)</option>
+          <option value="genre">Genre (A-Ö)</option>
+        </select>
+      </div>
+
+      <!-- Filmlista -->
+      <div class="movie-grid">
+        <h4 class="mb-4"><i class="bi bi-collection-play"></i> Mina filmer</h4>
+        <div id="movieList" class="row g-4"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal för meddelanden -->
+  <div class="modal fade" id="messageModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title"><i class="bi bi-info-circle"></i> Meddelande</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="modalMessage"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
