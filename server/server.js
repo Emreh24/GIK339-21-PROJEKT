@@ -47,8 +47,8 @@ function validateMovieData(data) {
   const yearNum = Number(year);
   const ratingNum = Number(rating);
 
-  if (!Number.isInteger(yearNum) || yearNum < 1800 || yearNum > 2100) {
-    errors.push("År måste vara mellan 1800 och 2100");
+  if (!Number.isInteger(yearNum) || yearNum < 1895 || yearNum > 2026) {
+    errors.push("År måste vara mellan 1895 och 2026");
   }
 
   if (!Number.isInteger(ratingNum) || ratingNum < 1 || ratingNum > 10) {

@@ -94,8 +94,8 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  if (year < 1800 || year > 2100) {
-    showMessage("År måste vara mellan 1800 och 2100", 'warning');
+  if (year < 1895 || year > 2026) {
+    showMessage("År måste vara mellan 1895 och 2026", 'warning');
     return;
   }
 
